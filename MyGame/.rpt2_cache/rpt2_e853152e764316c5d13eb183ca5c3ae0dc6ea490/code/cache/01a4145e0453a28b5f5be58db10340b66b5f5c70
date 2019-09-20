@@ -1,0 +1,7 @@
+{
+  "code": "import { PageContainer } from \"./base/PageContainer\";\r\nexport class General extends PageContainer {\r\n    constructor(app) {\r\n        super(app);\r\n    }\r\n}\r\n",
+  "references": [
+    "F:/work/MyGame/MyGame/src/game/gui/base/PageContainer.ts",
+    "F:/work/MyGame/MyGame/src/game/GameApp.ts"
+  ]
+}

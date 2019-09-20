@@ -1,0 +1,4 @@
+{
+  "code": "var REG = Laya.ClassUtils.regClass;\r\nexport var ui;\r\n(function (ui) {\r\n    class LoadUI extends Laya.View {\r\n        constructor() { super(); }\r\n        createChildren() {\r\n            super.createChildren();\r\n            this.loadScene(\"Load\");\r\n        }\r\n    }\r\n    ui.LoadUI = LoadUI;\r\n    REG(\"ui.LoadUI\", LoadUI);\r\n    class StartUI extends Laya.Scene {\r\n        constructor() { super(); }\r\n        createChildren() {\r\n            super.createChildren();\r\n            this.loadScene(\"Start\");\r\n        }\r\n    }\r\n    ui.StartUI = StartUI;\r\n    REG(\"ui.StartUI\", StartUI);\r\n})(ui || (ui = {}));\r\n",
+  "references": []
+}

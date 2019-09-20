@@ -1,0 +1,11 @@
+{
+  "code": "import { Container } from \"./base/Container\";\r\nimport { HUD } from \"./HUD\";\r\nimport { General } from \"./General\";\r\nimport { Top } from \"./Top\";\r\nimport { PageDef } from \"./page/PageDef\";\r\nexport class UIRoot extends Container {\r\n    get HUD() {\r\n        return this._HUD;\r\n    }\r\n    get general() {\r\n        return this._general;\r\n    }\r\n    get top() {\r\n        return this._top;\r\n    }\r\n    constructor(app) {\r\n        super(app);\r\n        PageDef.init();\r\n        this._HUD = new HUD(app);\r\n        this.addChild(this._HUD);\r\n        this._general = new General(app);\r\n        this.addChild(this._general);\r\n        this._top = new Top(app);\r\n        this.addChild(this._top);\r\n        this.openLoadPage();\r\n    }\r\n    openLoadPage() {\r\n        this._top.openPage(PageDef.LOAD_PAGE);\r\n    }\r\n}\r\n",
+  "references": [
+    "F:/work/MyGame/MyGame/src/game/gui/base/Container.ts",
+    "F:/work/MyGame/MyGame/src/game/gui/HUD.ts",
+    "F:/work/MyGame/MyGame/src/game/gui/General.ts",
+    "F:/work/MyGame/MyGame/src/game/gui/Top.ts",
+    "F:/work/MyGame/MyGame/src/game/gui/page/PageDef.ts",
+    "F:/work/MyGame/MyGame/src/game/GameApp.ts"
+  ]
+}

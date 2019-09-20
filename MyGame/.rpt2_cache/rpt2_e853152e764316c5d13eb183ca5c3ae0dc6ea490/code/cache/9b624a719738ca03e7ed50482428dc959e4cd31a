@@ -1,0 +1,8 @@
+{
+  "code": "import { Page } from \"../base/Page\";\r\nimport { ui } from \"../../../ui/layaMaxUI\";\r\nexport class LoadPage extends Page {\r\n    constructor(app) {\r\n        super(app);\r\n        this._asset = [\"res/atlas/comp.atlas\"];\r\n    }\r\n    init() {\r\n        this._view = new ui.LoadUI();\r\n        this._view.createView(Laya.View.uiMap['Load']);\r\n        this._viewUI = this._view;\r\n        this.addChild(this._view);\r\n    }\r\n    onOpen() {\r\n        super.onOpen();\r\n        this._viewUI.progress_JD.value = 0;\r\n        Laya.Tween.to(this._viewUI.progress_JD, { value: 1 }, 2000);\r\n    }\r\n    close() {\r\n        super.close();\r\n    }\r\n}\r\n",
+  "references": [
+    "F:/work/MyGame/MyGame/src/game/gui/base/Page.ts",
+    "F:/work/MyGame/MyGame/src/game/GameApp.ts",
+    "F:/work/MyGame/MyGame/src/ui/layaMaxUI.ts"
+  ]
+}

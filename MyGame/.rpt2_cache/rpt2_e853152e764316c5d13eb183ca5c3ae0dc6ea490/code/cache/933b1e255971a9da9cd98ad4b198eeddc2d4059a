@@ -1,0 +1,6 @@
+{
+  "code": "import { UIRoot } from \"./gui/UIRoot\";\r\nexport class GameApp {\r\n    get uiRoot() {\r\n        return this._uiRoot;\r\n    }\r\n    constructor() {\r\n        this.init();\r\n    }\r\n    init() {\r\n        this._uiRoot = new UIRoot(this);\r\n        Laya.stage.addChild(this._uiRoot);\r\n    }\r\n}\r\n",
+  "references": [
+    "F:/work/MyGame/MyGame/src/game/gui/UIRoot.ts"
+  ]
+}

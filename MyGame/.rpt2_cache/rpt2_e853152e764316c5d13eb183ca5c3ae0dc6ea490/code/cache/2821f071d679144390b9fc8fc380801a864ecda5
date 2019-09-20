@@ -1,0 +1,7 @@
+{
+  "code": "import { Container } from \"./Container\";\r\nexport class Page extends Container {\r\n    constructor(app, onOpenFunc, onCloseFunc) {\r\n        super(app);\r\n        this.isOpened = false;\r\n        this.mouseThrough = true;\r\n    }\r\n    open(key) {\r\n        this._key = key;\r\n        this.isOpened = true;\r\n        this.clear();\r\n        Laya.loader.load(this._asset, Laya.Handler.create(this, this.onLoaded));\r\n    }\r\n    onLoaded() {\r\n        if (!this.isOpened)\r\n            return;\r\n        this.init();\r\n        this.onOpen();\r\n        if (this._view instanceof Laya.View) {\r\n            this._view.mouseThrough = this.mouseThrough;\r\n            this._view.cacheAs = \"normal\";\r\n            this._view.centerX = 0.5;\r\n            this._view.centerY = 0.5;\r\n        }\r\n    }\r\n    init() {\r\n    }\r\n    onOpen() {\r\n        this._onOpenFunc && this._onOpenFunc(this);\r\n    }\r\n    clear() {\r\n        Laya.timer.clearAll(this);\r\n        if (this._view) {\r\n            this._view.destroy(true);\r\n            this._view = null;\r\n        }\r\n    }\r\n    close() {\r\n        this.clear();\r\n        this._onCloseFunc && this._onCloseFunc(this);\r\n        this.dispose();\r\n    }\r\n}\r\n",
+  "references": [
+    "F:/work/MyGame/MyGame/src/game/gui/base/Container.ts",
+    "F:/work/MyGame/MyGame/src/game/GameApp.ts"
+  ]
+}

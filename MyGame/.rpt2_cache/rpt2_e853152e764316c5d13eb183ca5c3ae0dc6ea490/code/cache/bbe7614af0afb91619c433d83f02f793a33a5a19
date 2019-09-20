@@ -1,0 +1,9 @@
+{
+  "code": "import { Container } from \"./Container\";\r\nimport { PageDef } from \"../page/PageDef\";\r\nexport class PageContainer extends Container {\r\n    constructor(app) {\r\n        super(app);\r\n        this._pages = {};\r\n        this.mouseThrough = true;\r\n    }\r\n    openPage(key, onOpenFunc, onCloseFunc, createNew = false) {\r\n        let page;\r\n        if (!createNew) {\r\n            page = this._pages[key];\r\n        }\r\n        if (!page) {\r\n            let pageClass = PageDef.getPageClass(key);\r\n            page = new pageClass(this._app, onOpenFunc, () => {\r\n                onCloseFunc && onCloseFunc();\r\n                delete this._pages[key];\r\n            });\r\n            this.addChild(page);\r\n            page.open(key);\r\n        }\r\n        else {\r\n            if (page.parent) {\r\n                page.parent.setChildIndex(page, page.parent.numChildren - 1);\r\n                page.visible = true;\r\n            }\r\n        }\r\n    }\r\n    getPage(key) {\r\n        return this._pages[key];\r\n    }\r\n    closePage(key) {\r\n        let page = this._pages[key];\r\n        if (page) {\r\n            page.close();\r\n        }\r\n    }\r\n    closeAll() {\r\n        for (let key in this._pages) {\r\n            this.closePage(Number(key));\r\n        }\r\n        while (this.numChildren)\r\n            this.removeChildAt(0);\r\n    }\r\n}\r\n",
+  "references": [
+    "F:/work/MyGame/MyGame/src/game/gui/base/Container.ts",
+    "F:/work/MyGame/MyGame/src/game/gui/base/Page.ts",
+    "F:/work/MyGame/MyGame/src/game/gui/page/PageDef.ts",
+    "F:/work/MyGame/MyGame/src/game/GameApp.ts"
+  ]
+}

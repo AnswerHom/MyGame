@@ -1,0 +1,6 @@
+{
+  "code": "import { LoadPage } from \"./LoadPage\";\r\nexport class PageDef {\r\n    static init() {\r\n        this._pageClassMap[PageDef.LOAD_PAGE] = LoadPage;\r\n    }\r\n    static getPageClass(key) {\r\n        return PageDef._pageClassMap[key];\r\n    }\r\n}\r\nPageDef.LOAD_PAGE = 1;\r\nPageDef._pageClassMap = {};\r\n",
+  "references": [
+    "F:/work/MyGame/MyGame/src/game/gui/page/LoadPage.ts"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "code": "export class Container extends Laya.Sprite {\r\n    constructor(app) {\r\n        super();\r\n        this._dispose = false;\r\n        this._app = app;\r\n    }\r\n    dispose() {\r\n        this._dispose = true;\r\n    }\r\n}\r\n",
+  "references": [
+    "F:/work/MyGame/MyGame/src/game/GameApp.ts"
+  ]
+}

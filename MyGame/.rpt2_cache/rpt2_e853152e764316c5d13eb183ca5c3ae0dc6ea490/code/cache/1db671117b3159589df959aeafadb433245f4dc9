@@ -1,0 +1,8 @@
+{
+  "code": "import GameConfig from \"./GameConfig\";\r\nimport { GameApp } from \"./game/GameApp\";\r\nclass Main {\r\n    constructor() {\r\n        if (window[\"Laya3D\"])\r\n            Laya3D.init(GameConfig.width, GameConfig.height);\r\n        else\r\n            Laya.init(GameConfig.width, GameConfig.height, Laya[\"WebGL\"]);\r\n        Laya[\"Physics\"] && Laya[\"Physics\"].enable();\r\n        Laya[\"DebugPanel\"] && Laya[\"DebugPanel\"].enable();\r\n        Laya.stage.scaleMode = GameConfig.scaleMode;\r\n        Laya.stage.screenMode = GameConfig.screenMode;\r\n        Laya.stage.alignV = GameConfig.alignV;\r\n        Laya.stage.alignH = GameConfig.alignH;\r\n        Laya.URL.exportSceneToJson = GameConfig.exportSceneToJson;\r\n        if (GameConfig.debug || Laya.Utils.getQueryString(\"debug\") == \"true\")\r\n            Laya.enableDebugPanel();\r\n        if (GameConfig.physicsDebug && Laya[\"PhysicsDebugDraw\"])\r\n            Laya[\"PhysicsDebugDraw\"].enable();\r\n        if (GameConfig.stat)\r\n            Laya.Stat.show();\r\n        Laya.alertGlobalError = true;\r\n        Laya.loader.load(\"ui.json\", Laya.Handler.create(this, this.onLoadUIJson, null, false));\r\n    }\r\n    onLoadUIJson() {\r\n        Laya.View.uiMap = Laya.loader.getRes(\"ui.json\");\r\n        let app = new GameApp();\r\n    }\r\n}\r\nnew Main();\r\n",
+  "references": [
+    "F:/work/MyGame/MyGame/src/GameConfig.ts",
+    "F:/work/MyGame/MyGame/src/game/gui/UIRoot.ts",
+    "F:/work/MyGame/MyGame/src/game/GameApp.ts"
+  ]
+}
