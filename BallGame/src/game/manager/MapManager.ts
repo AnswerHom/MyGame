@@ -1,6 +1,11 @@
 import { Ground } from "../scene/Ground";
 import { Ball } from "../scene/Ball";
 
+export class CollideGroup {
+    static GROUND: number = 1;
+    static BUILDING: number = 2;
+}
+
 export class MapManager {
     private _showGroundList: Ground[];
     private _freeGroundList: Ground[];
@@ -24,7 +29,7 @@ export class MapManager {
         for (let i = 0; i < count; i++) {
             let ground = this._freeGroundList.shift();
             if (!ground) {
-                ground = new Ground();
+                ground = new Ground(this._scene);
             }
             let pos = ground.transform.position;
             pos.x = pos.y = 0;
@@ -32,6 +37,11 @@ export class MapManager {
             ground.transform.position = pos;
             this._showGroundList.push(ground);
             this._scene.addChild(ground);
+            let type = Ground.TYPE_1;
+            if (this._groundIndex > 3) {
+                type = Math.random() >= 0.5 ? Ground.TYPE_2 : Ground.TYPE_3;
+            }
+            ground.setType(type);
         }
     }
 

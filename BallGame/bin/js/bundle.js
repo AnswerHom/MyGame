@@ -18,14 +18,10 @@
         })(test = ui.test || (ui.test = {}));
     })(ui || (ui = {}));
 
-    class Ground extends Laya.MeshSprite3D {
-        constructor() {
+    class Building extends Laya.MeshSprite3D {
+        constructor(long = 2, width = 2, height = 2) {
             super();
-            this._width = 10;
-            this._height = 10;
-            this._friction = 2;
-            this._restitution = 0;
-            this.meshFilter.sharedMesh = Laya.PrimitiveMesh.createPlane(this._width, this._height, 10, 10);
+            this.meshFilter.sharedMesh = Laya.PrimitiveMesh.createBox(long, height, width);
             this._material = new Laya.BlinnPhongMaterial();
             let tilingOffset = this._material.tilingOffset;
             tilingOffset.setValue(5, 5, 0, 0);
@@ -33,10 +29,10 @@
             this.meshRenderer.material = this._material;
             Laya.Texture2D.load("res/grass.png", Laya.Handler.create(this, this.onLoadMaterial, null, false));
             this._collide = this.addComponent(Laya.PhysicsCollider);
-            let planeShape = new Laya.BoxColliderShape(this._width, 0, this._height);
-            this._collide.colliderShape = planeShape;
-            this._collide.friction = this._friction;
-            this._collide.restitution = this._restitution;
+            this._collide.collisionGroup = CollideGroup.BUILDING;
+            let boxShape = new Laya.BoxColliderShape(long, height, width);
+            this._collide.colliderShape = boxShape;
+            this._collide.enabled = false;
         }
         onLoadMaterial(tex) {
             this._material.albedoTexture = tex;
@@ -46,6 +42,107 @@
         }
     }
 
+    class Platform extends Laya.MeshSprite3D {
+        constructor(width = 4, height = 4) {
+            super();
+            this.meshFilter.sharedMesh = Laya.PrimitiveMesh.createPlane(width, height);
+            this._material = new Laya.BlinnPhongMaterial();
+            let tilingOffset = this._material.tilingOffset;
+            tilingOffset.setValue(5, 5, 0, 0);
+            this._material.tilingOffset = tilingOffset;
+            this.meshRenderer.material = this._material;
+            Laya.Texture2D.load("res/grass.png", Laya.Handler.create(this, this.onLoadMaterial, null, false));
+            this._collide = this.addComponent(Laya.PhysicsCollider);
+            this._collide.collisionGroup = CollideGroup.BUILDING;
+            let boxShape = new Laya.BoxColliderShape(width, 0, height);
+            this._collide.colliderShape = boxShape;
+            this.transform.rotate(new Laya.Vector3(30, 0, 0), true, false);
+        }
+        onLoadMaterial(tex) {
+            this._material.albedoTexture = tex;
+        }
+        clear() {
+            this.removeSelf();
+        }
+    }
+
+    class Ground extends Laya.MeshSprite3D {
+        constructor(scene) {
+            super();
+            this._width = 10;
+            this._height = 10;
+            this._friction = 2;
+            this._restitution = 0;
+            this._objList = [];
+            this._type = 0;
+            this._scene = scene;
+            this.meshFilter.sharedMesh = Laya.PrimitiveMesh.createPlane(this._width, this._height, 10, 10);
+            this._material = new Laya.BlinnPhongMaterial();
+            let tilingOffset = this._material.tilingOffset;
+            tilingOffset.setValue(5, 5, 0, 0);
+            this._material.tilingOffset = tilingOffset;
+            this.meshRenderer.material = this._material;
+            Laya.Texture2D.load("res/grass.png", Laya.Handler.create(this, this.onLoadMaterial, null, false));
+            this._collide = this.addComponent(Laya.PhysicsCollider);
+            this._collide.collisionGroup = CollideGroup.GROUND;
+            let planeShape = new Laya.BoxColliderShape(this._width, 0, this._height);
+            this._collide.colliderShape = planeShape;
+            this._collide.friction = this._friction;
+            this._collide.restitution = this._restitution;
+        }
+        setType(type) {
+            this._type = type;
+            switch (this._type) {
+                case Ground.TYPE_1:
+                    break;
+                case Ground.TYPE_2:
+                    let platform = new Platform();
+                    this._objList.push(platform);
+                    this._scene.addChild(platform);
+                    let pos1 = platform.transform.position;
+                    let groundPos = this.transform.position;
+                    pos1.setValue(groundPos.x, groundPos.y, groundPos.z + 5);
+                    platform.transform.position = pos1;
+                    break;
+                case Ground.TYPE_3:
+                    let long = 2 + Math.floor(6 * Math.random());
+                    let x = -5 + long / 2;
+                    let hollLong = 2;
+                    for (let i = 0; i < 2; i++) {
+                        let wall = new Building(long, 2, 2);
+                        this._objList.push(wall);
+                        this._scene.addChild(wall);
+                        let pos1 = wall.transform.position;
+                        let groundPos = this.transform.position;
+                        pos1.setValue(groundPos.x + x, groundPos.y + 1, groundPos.z + 1);
+                        wall.transform.position = pos1;
+                        let newLong = 10 - long - hollLong;
+                        x = -5 + long + hollLong + newLong / 2;
+                        long = newLong;
+                    }
+                    break;
+            }
+        }
+        onLoadMaterial(tex) {
+            this._material.albedoTexture = tex;
+        }
+        clear() {
+            for (let i = 0; i < this._objList.length; i++) {
+                let building = this._objList[i];
+                building && building.clear();
+            }
+            this._objList.length = 0;
+            this.removeSelf();
+        }
+    }
+    Ground.TYPE_1 = 0;
+    Ground.TYPE_2 = 1;
+    Ground.TYPE_3 = 2;
+
+    class CollideGroup {
+    }
+    CollideGroup.GROUND = 1;
+    CollideGroup.BUILDING = 2;
     class MapManager {
         constructor(scene) {
             this._groundIndex = 0;
@@ -61,7 +158,7 @@
             for (let i = 0; i < count; i++) {
                 let ground = this._freeGroundList.shift();
                 if (!ground) {
-                    ground = new Ground();
+                    ground = new Ground(this._scene);
                 }
                 let pos = ground.transform.position;
                 pos.x = pos.y = 0;
@@ -69,6 +166,11 @@
                 ground.transform.position = pos;
                 this._showGroundList.push(ground);
                 this._scene.addChild(ground);
+                let type = Ground.TYPE_1;
+                if (this._groundIndex > 3) {
+                    type = Math.random() >= 0.5 ? Ground.TYPE_2 : Ground.TYPE_3;
+                }
+                ground.setType(type);
             }
         }
         update(diff) {
@@ -102,7 +204,7 @@
             Laya.Texture2D.load("res/wood.jpg", Laya.Handler.create(this, this.onLoadMaterial, null, false));
             this.meshRenderer.material = this._material;
             this._collide = this.addComponent(Laya.Rigidbody3D);
-            this._collide.colliderShape = new Laya.BoxColliderShape(this._radius, this._radius, this._radius);
+            this._collide.colliderShape = new Laya.SphereColliderShape(this._radius);
             this._collide.mass = this._mess;
         }
         onLoadMaterial(tex) {
@@ -119,8 +221,10 @@
     class GameUI extends ui.test.TestSceneUI {
         constructor() {
             super();
+            this._isMouseDown = false;
             this._ballList = [];
             this.newScene = Laya.stage.addChild(new Laya.Scene3D());
+            this._tempV = new Laya.Vector3();
             this._camera = this.newScene.addChild(new Laya.Camera(0, 0.1, 100));
             this._camera.transform.rotate(new Laya.Vector3(-15, 0, 0), true, false);
             var directionLight = new Laya.DirectionLight();
@@ -132,6 +236,9 @@
             this._mapManager = new MapManager(this.newScene);
             this.addMainPlayer();
             Laya.timer.frameLoop(1, this, this.update);
+            Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
+            Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onMouseUp);
+            Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.onMouseMove);
         }
         addMainPlayer() {
             this._mainPlayer = new Ball();
@@ -159,8 +266,26 @@
             if (this._camera && this._mainPlayer) {
                 let pos = this._camera.transform.position;
                 let playerPos = this._mainPlayer.transform.position;
-                pos.setValue(playerPos.x, playerPos.y + 6, playerPos.z + 9.5);
+                pos.setValue(0, playerPos.y + 6, playerPos.z + 9.5);
                 this._camera.transform.position = pos;
+            }
+        }
+        onMouseDown() {
+            this._isMouseDown = true;
+            this._startX = Laya.stage.mouseX;
+        }
+        onMouseUp() {
+            this._isMouseDown = false;
+        }
+        onMouseMove() {
+            if (!this._isMouseDown || !this._mainPlayer)
+                return;
+            let diff = Laya.stage.mouseX - this._startX;
+            this._startX = Laya.stage.mouseX;
+            if (Math.abs(diff) >= 0.1) {
+                let pos = this._mainPlayer.transform.position;
+                pos.x += diff * (15 / Laya.Browser.width);
+                this._mainPlayer.transform.position = pos;
             }
         }
     }

@@ -14,11 +14,17 @@ export default class GameUI extends ui.test.TestSceneUI {
 	private _ballList: Ball[];
 	private _camera: Laya.Camera;
 
+	//屏幕坐标
+	private _isMouseDown: boolean = false;
+	private _tempV: Laya.Vector3;
+	//开始滑动坐标
+	private _startX: number;
+
 	constructor() {
 		super();
 		this._ballList = [];
 		this.newScene = Laya.stage.addChild(new Laya.Scene3D()) as Laya.Scene3D;
-
+		this._tempV = new Laya.Vector3();
 		//初始化照相机
 		this._camera = this.newScene.addChild(new Laya.Camera(0, 0.1, 100)) as Laya.Camera;
 		this._camera.transform.rotate(new Laya.Vector3(-15, 0, 0), true, false);
@@ -35,6 +41,9 @@ export default class GameUI extends ui.test.TestSceneUI {
 		this._mapManager = new MapManager(this.newScene);
 		this, this.addMainPlayer();
 		Laya.timer.frameLoop(1, this, this.update);
+		Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
+		Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onMouseUp);
+		Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.onMouseMove);
 	}
 
 	private addMainPlayer(): void {
@@ -66,8 +75,29 @@ export default class GameUI extends ui.test.TestSceneUI {
 		if (this._camera && this._mainPlayer) {
 			let pos = this._camera.transform.position;
 			let playerPos = this._mainPlayer.transform.position;
-			pos.setValue(playerPos.x, playerPos.y + 6, playerPos.z + 9.5);
+			pos.setValue(0, playerPos.y + 6, playerPos.z + 9.5);
 			this._camera.transform.position = pos;
 		}
 	}
+
+	private onMouseDown(): void {
+		this._isMouseDown = true;
+		this._startX = Laya.stage.mouseX;
+	}
+
+	private onMouseUp(): void {
+		this._isMouseDown = false;
+	}
+
+	private onMouseMove(): void {
+		if (!this._isMouseDown || !this._mainPlayer) return;
+		let diff = Laya.stage.mouseX - this._startX;
+		this._startX = Laya.stage.mouseX;
+		if (Math.abs(diff) >= 0.1) {
+			let pos = this._mainPlayer.transform.position;
+			pos.x += diff * (15 / Laya.Browser.width);
+			this._mainPlayer.transform.position = pos;
+		}
+	}
+
 }
