@@ -72,7 +72,7 @@ export default class GameUI extends ui.test.TestSceneUI {
 			}
 		}
 		//相机
-		if (this._camera && this._mainPlayer) {
+		if (this._camera && this._mainPlayer && this._mainPlayer.parent) {
 			let pos = this._camera.transform.position;
 			let playerPos = this._mainPlayer.transform.position;
 			pos.setValue(0, playerPos.y + 6, playerPos.z + 9.5);

@@ -29,7 +29,8 @@ export class Building extends Laya.MeshSprite3D {
         let boxShape = new Laya.BoxColliderShape(long, height, width);
         //物理碰撞体设置形状
         this._collide.colliderShape = boxShape;
-        this._collide.enabled = false;
+        // this._collide.enabled = false;
+        this._collide.isTrigger = true;
     }
 
     private onLoadMaterial(tex: Laya.Texture2D) {

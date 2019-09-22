@@ -1,3 +1,5 @@
+import { TriggerCollisionScript } from "../../script/TriggerCollisionScript";
+
 /**
  * 小球
  */
@@ -28,6 +30,10 @@ export class Ball extends Laya.MeshSprite3D {
         this._collide.colliderShape = new Laya.SphereColliderShape(this._radius);
         //设置刚体的质量
         this._collide.mass = this._mess;
+        this._collide.isKinematic = true;
+
+        let script = this.addComponent(TriggerCollisionScript);
+        script.owner = this;
     }
 
     private onLoadMaterial(tex: Laya.Texture2D) {
@@ -35,9 +41,13 @@ export class Ball extends Laya.MeshSprite3D {
     }
 
     update(diff: number) {
-        var transform = this.transform;
-        var pos = transform.position;
+        let transform = this.transform;
+        let pos = transform.position;
         pos.z -= this._speed * diff / 1000;
-        this.transform.position = pos;
+        transform.position = pos;
+        //旋转
+        let rotation = transform.rotationEuler;
+        rotation.x -= 360 * diff / 1000;
+        transform.rotationEuler = rotation;
     }
 }

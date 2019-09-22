@@ -46,7 +46,7 @@ export class MapManager {
     }
 
     update(diff: number) {
-        if (!this._player) return;
+        if (!this._player || !this._player.parent) return;
         //检查回收地板
         let len = this._showGroundList.length;
         for (let i = 0; i < len; i++) {

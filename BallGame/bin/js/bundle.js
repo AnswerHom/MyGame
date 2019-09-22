@@ -32,7 +32,7 @@
             this._collide.collisionGroup = CollideGroup.BUILDING;
             let boxShape = new Laya.BoxColliderShape(long, height, width);
             this._collide.colliderShape = boxShape;
-            this._collide.enabled = false;
+            this._collide.isTrigger = true;
         }
         onLoadMaterial(tex) {
             this._material.albedoTexture = tex;
@@ -174,7 +174,7 @@
             }
         }
         update(diff) {
-            if (!this._player)
+            if (!this._player || !this._player.parent)
                 return;
             let len = this._showGroundList.length;
             for (let i = 0; i < len; i++) {
@@ -193,6 +193,27 @@
         }
     }
 
+    class TriggerCollisionScript extends Laya.Script3D {
+        constructor() {
+            super();
+        }
+        onTriggerEnter(other) {
+            if (this.owner && other.collisionGroup == CollideGroup.BUILDING) {
+                this.owner.removeSelf();
+            }
+        }
+        onTriggerStay(other) {
+        }
+        onTriggerExit(other) {
+        }
+        onCollisionEnter(collision) {
+        }
+        onCollisionStay(collision) {
+        }
+        onCollisionExit(collision) {
+        }
+    }
+
     class Ball extends Laya.MeshSprite3D {
         constructor() {
             super();
@@ -206,15 +227,21 @@
             this._collide = this.addComponent(Laya.Rigidbody3D);
             this._collide.colliderShape = new Laya.SphereColliderShape(this._radius);
             this._collide.mass = this._mess;
+            this._collide.isKinematic = true;
+            let script = this.addComponent(TriggerCollisionScript);
+            script.owner = this;
         }
         onLoadMaterial(tex) {
             this._material.albedoTexture = tex;
         }
         update(diff) {
-            var transform = this.transform;
-            var pos = transform.position;
+            let transform = this.transform;
+            let pos = transform.position;
             pos.z -= this._speed * diff / 1000;
-            this.transform.position = pos;
+            transform.position = pos;
+            let rotation = transform.rotationEuler;
+            rotation.x -= 360 * diff / 1000;
+            transform.rotationEuler = rotation;
         }
     }
 
@@ -263,7 +290,7 @@
                     ball && ball.update(diff);
                 }
             }
-            if (this._camera && this._mainPlayer) {
+            if (this._camera && this._mainPlayer && this._mainPlayer.parent) {
                 let pos = this._camera.transform.position;
                 let playerPos = this._mainPlayer.transform.position;
                 pos.setValue(0, playerPos.y + 6, playerPos.z + 9.5);
