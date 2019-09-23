@@ -1,0 +1,135 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset='utf-8' />
+	<title>www.layabox.com</title>
+	<meta name='viewport' content='width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no'
+	/>
+	<meta name="renderer" content="webkit"/>
+	<meta name='apple-mobile-web-app-capable' content='yes' />
+	<meta name='full-screen' content='true' />
+	<meta name='x5-fullscreen' content='true' />
+	<meta name='360-fullscreen' content='true' />
+	<meta name="laya" screenorientation ="landscape"/>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+	<meta http-equiv='expires' content='0' />
+	<meta http-equiv="Cache-Control" content="no-siteapp"/>
+</head>
+
+<body>
+	<!--以下引用了常用类库，如果不使用，可以删除-->
+	
+    <!--核心包，封装了显示对象渲染，事件，时间管理，时间轴动画，缓动，消息交互,socket，本地存储，鼠标触摸，声音，加载，颜色滤镜，位图字体等-->
+	<script type="text/javascript" src="libs/laya.core.js"></script>
+	<!--提供了微信小游戏的适配-->
+	<script type="text/javascript" src="libs/laya.wxmini.js"></script>
+	<!--封装了webgl渲染管线，如果使用webgl渲染，可以在初始化时调用Laya.init(1000,800,laya.webgl.WebGL);-->
+    <script type="text/javascript" src="libs/laya.webgl.js"></script>
+	
+	<!--是动画模块，包含了swf动画，骨骼动画等-->
+    <script type="text/javascript" src="libs/laya.ani.js"></script>
+	<!--包含更多webgl滤镜，比如外发光，阴影，模糊以及更多-->
+    <script type="text/javascript" src="libs/laya.filter.js"></script>
+	<!--封装了html动态排版功能-->
+    <script type="text/javascript" src="libs/laya.html.js"></script>
+	<!--提供了制作UI的各种组件实现-->
+    <script type="text/javascript" src="libs/laya.ui.js"></script>
+	<!--提供LayaAir3D接口-->
+	<script type="text/javascript" src="libs/laya.d3.js"></script>
+	<script type="text/javascript" src="libs/laya.particle.js"></script>
+	<!-- 物理引擎matter.js -->
+	<script type="text/javascript" src="libs/Box2D.js"></script>
+	<!--<script type="text/javascript" src="libs/LayaRender.js"></script>-->
+	<!--<script type="text/javascript" src="libs/decomp.js"></script>-->
+
+	<!--用户自定义顺序文件添加到这里-->
+	<!--jsfile--Custom-->
+	<!--jsfile--Custom-->
+	<!--自定义js-->
+	<script type="text/javascript" src="conf/def.js"></script>
+	<!--自定义的js(src文件夹下)文件自动添加到下面jsfile模块标签里面里-->
+	<!--删除标签，ide不会自动添加js文件，请谨慎操作-->
+	<!--jsfile--startTag-->
+	<script src="js/GameApp.js"></script>
+	<script src="js/dou/utils/Vesion.js"></script>
+	<script src="js/dou/utils/Vector2.js"></script>
+	<script src="js/dou/utils/TextFieldU.js"></script>
+	<script src="js/dou/utils/TeaStyle.js"></script>
+	<script src="js/dou/utils/StringU.js"></script>
+	<script src="js/dou/utils/ObjectPools.js"></script>
+	<script src="js/dou/utils/MathU.js"></script>
+	<script src="js/dou/utils/IPoolsObject.js"></script>
+	<script src="js/dou/utils/DisplayU.js"></script>
+	<script src="js/dou/scene/Effect.js"></script>
+	<script src="js/dou/scene/Color.js"></script>
+	<script src="js/dou/scene/Camera.js"></script>
+	<script src="js/dou/scene/BuilderMgr.js"></script>
+	<script src="js/dou/scene/BaseMeshSprite3D.js"></script>
+	<script src="js/dou/PathConst.js"></script>
+	<script src="js/dou/managers/MatterBodyPools.js"></script>
+	<script src="js/dou/gui/page/PageDef.js"></script>
+	<script src="js/dou/gui/component/TweenBtnEff.js"></script>
+	<script src="js/dou/gui/base/TabBox.js"></script>
+	<script src="js/dou/data/Template.js"></script>
+	<script src="js/dou/data/AssetsLoader.js"></script>
+	<script src="js/core/obj/ByteArray.js"></script>
+	<script src="js/dou/gui/base/Container.js"></script>
+	<script src="js/dou/BlackBorder.js"></script>
+	<script src="js/dou/data/PreLoad.js"></script>
+	<script src="js/dou/data/RefAsset.js"></script>
+	<script src="js/dou/gui/base/Page.js"></script>
+	<script src="js/dou/gui/base/PageContainer.js"></script>
+	<script src="js/dou/gui/base/TabPage.js"></script>
+	<script src="js/dou/gui/component/Grid.js"></script>
+	<script src="js/dou/gui/component/MapLayer.js"></script>
+	<script src="js/dou/gui/component/MyList.js"></script>
+	<script src="js/dou/gui/component/NumGroup.js"></script>
+	<script src="js/dou/gui/GeneralUI.js"></script>
+	<script src="js/dou/gui/HUD.js"></script>
+	<script src="js/dou/gui/page/FenXiang.js"></script>
+	<script src="js/dou/gui/page/FirstDie.js"></script>
+	<script src="js/dou/gui/page/Help.js"></script>
+	<script src="js/dou/gui/page/PagePlay.js"></script>
+	<script src="js/dou/gui/page/PageRestart.js"></script>
+	<script src="js/dou/gui/page/PageStart.js"></script>
+	<script src="js/dou/gui/page/PinBallPage.js"></script>
+	<script src="js/dou/gui/page/QianDao.js"></script>
+	<script src="js/dou/gui/page/QunSortScrollPage.js"></script>
+	<script src="js/dou/gui/page/SkinPage.js"></script>
+	<script src="js/dou/gui/page/SortPage.js"></script>
+	<script src="js/dou/gui/page/SortScrollPage.js"></script>
+	<script src="js/dou/gui/TopUI.js"></script>
+	<script src="js/dou/managers/LocalStorageMgr.js"></script>
+	<script src="js/dou/managers/PlayerDataMgr.js"></script>
+	<script src="js/dou/scene/BlinnPhongMaterialExp.js"></script>
+	<script src="js/dou/scene/builder/BaseBuilder.js"></script>
+	<script src="js/dou/scene/builder/Builder.js"></script>
+	<script src="js/dou/scene/builder/Obstacle.js"></script>
+	<script src="js/dou/scene/builder/Road.js"></script>
+	<script src="js/dou/scene/builder/SpeedAdd.js"></script>
+	<script src="js/dou/scene/builder/XiePo.js"></script>
+	<script src="js/dou/scene/CameraMove.js"></script>
+	<script src="js/dou/scene/CameraMoveScript.js"></script>
+	<script src="js/dou/scene/CustomMaterial.js"></script>
+	<script src="js/dou/scene/DrawBoxColliderScript.js"></script>
+	<script src="js/dou/scene/EffectFrame.js"></script>
+	<script src="js/dou/scene/EffectLayer.js"></script>
+	<script src="js/dou/scene/GlitterMaterial.js"></script>
+	<script src="js/dou/scene/PlayerBaseScript.js"></script>
+	<script src="js/dou/scene/PlayerMeshSprite3D.js"></script>
+	<script src="js/dou/scene/PlayerScript.js"></script>
+	<script src="js/dou/scene/RobotScript.js"></script>
+	<script src="js/dou/SceneRoot.js"></script>
+	<script src="js/dou/Sync.js"></script>
+	<script src="js/dou/UIRoot.js"></script>
+	<script src="js/ui/layaUI.max.all.js"></script>
+	<!--jsfile--endTag-->
+
+	<!--启动类添加到这里-->
+	<!--jsfile--Main-->
+	<script src="js/Launch.js"></script>
+	<!--jsfile--Main-->
+</body>
+
+</html>
