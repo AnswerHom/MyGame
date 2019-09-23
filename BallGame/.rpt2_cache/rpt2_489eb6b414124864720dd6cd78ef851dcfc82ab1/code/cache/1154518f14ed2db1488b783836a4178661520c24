@@ -1,0 +1,6 @@
+{
+  "code": "import { CollideGroup } from \"../game/manager/MapManager\";\r\nexport class TriggerCollisionScript extends Laya.Script3D {\r\n    constructor() {\r\n        super();\r\n    }\r\n    onTriggerEnter(other) {\r\n        if (this.owner && other.collisionGroup == CollideGroup.BUILDING) {\r\n            this.owner.removeSelf();\r\n        }\r\n    }\r\n    onTriggerStay(other) {\r\n    }\r\n    onTriggerExit(other) {\r\n    }\r\n    onCollisionEnter(collision) {\r\n    }\r\n    onCollisionStay(collision) {\r\n    }\r\n    onCollisionExit(collision) {\r\n    }\r\n}\r\n",
+  "references": [
+    "D:/work/MyGame/BallGame/src/game/manager/MapManager.ts"
+  ]
+}

@@ -1,0 +1,6 @@
+{
+  "code": "import { CollideGroup } from \"../manager/MapManager\";\r\nexport class Building extends Laya.MeshSprite3D {\r\n    constructor(long = 2, width = 2, height = 2) {\r\n        super();\r\n        this.meshFilter.sharedMesh = Laya.PrimitiveMesh.createBox(long, height, width);\r\n        this._material = new Laya.BlinnPhongMaterial();\r\n        let tilingOffset = this._material.tilingOffset;\r\n        tilingOffset.setValue(5, 5, 0, 0);\r\n        this._material.tilingOffset = tilingOffset;\r\n        this.meshRenderer.material = this._material;\r\n        Laya.Texture2D.load(\"res/grass.png\", Laya.Handler.create(this, this.onLoadMaterial, null, false));\r\n        this._collide = this.addComponent(Laya.PhysicsCollider);\r\n        this._collide.collisionGroup = CollideGroup.BUILDING;\r\n        let boxShape = new Laya.BoxColliderShape(long, height, width);\r\n        this._collide.colliderShape = boxShape;\r\n        this._collide.isTrigger = true;\r\n    }\r\n    onLoadMaterial(tex) {\r\n        this._material.albedoTexture = tex;\r\n    }\r\n    clear() {\r\n        this.removeSelf();\r\n    }\r\n}\r\n",
+  "references": [
+    "D:/work/MyGame/BallGame/src/game/manager/MapManager.ts"
+  ]
+}
