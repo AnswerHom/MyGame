@@ -1,0 +1,6 @@
+{
+  "code": "export class BaseObject extends Laya.MeshSprite3D {\r\n    constructor() {\r\n        super();\r\n        this._textureUrl = \"\";\r\n        this._material = new Laya.BlinnPhongMaterial();\r\n        this.meshRenderer.material = this._material;\r\n    }\r\n    init(url) {\r\n        this._textureUrl = url;\r\n        Laya.Texture2D.load(url, Laya.Handler.create(this, this.onLoadMaterial, null, false));\r\n    }\r\n    onLoadMaterial(tex) {\r\n        this._material.albedoTexture = tex;\r\n    }\r\n    setPos(x, y, z) {\r\n        let pos = this.transform.position;\r\n        pos.setValue(x, y, z);\r\n        this.transform.position = pos;\r\n    }\r\n    setRotate(x, y, z) {\r\n        let rotation = this.transform.rotationEuler;\r\n        rotation.setValue(x, y, z);\r\n        this.transform.rotationEuler = rotation;\r\n    }\r\n    clear() {\r\n        this.removeSelf();\r\n    }\r\n}\r\nBaseObject.poolName = \"BaseObject\";\r\n",
+  "references": [
+    "F:/work/MyGame/BallGame/src/game/SceneRoot.ts"
+  ]
+}

@@ -1,12 +1,10 @@
 import { CollideGroup } from "../manager/MapManager";
+import { BaseObject } from "./BaseObject";
 
 /**
- * 地板
+ * 障碍物
  */
-export class Building extends Laya.MeshSprite3D {
-
-    /**材质 */
-    private _material: Laya.BlinnPhongMaterial;
+export class Building extends BaseObject {
     /**碰撞器 */
     private _collide: Laya.PhysicsCollider;
 
@@ -15,13 +13,12 @@ export class Building extends Laya.MeshSprite3D {
         //设置形状
         this.meshFilter.sharedMesh = Laya.PrimitiveMesh.createBox(long, height, width);
         //设置材质
-        this._material = new Laya.BlinnPhongMaterial();
+        this.init("res/grass.png");
         //设置纹理平铺和偏移
         let tilingOffset = this._material.tilingOffset;
         tilingOffset.setValue(5, 5, 0, 0);
         this._material.tilingOffset = tilingOffset;
-        this.meshRenderer.material = this._material;
-        Laya.Texture2D.load("res/grass.png", Laya.Handler.create(this, this.onLoadMaterial, null, false));
+
         //平面添加物理碰撞体组件
         this._collide = this.addComponent(Laya.PhysicsCollider) as Laya.PhysicsCollider;
         this._collide.collisionGroup = CollideGroup.BUILDING;
@@ -33,11 +30,4 @@ export class Building extends Laya.MeshSprite3D {
         this._collide.isTrigger = true;
     }
 
-    private onLoadMaterial(tex: Laya.Texture2D) {
-        this._material.albedoTexture = tex;
-    }
-
-    clear(): void {
-        this.removeSelf();
-    }
 }

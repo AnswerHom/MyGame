@@ -1,143 +1,120 @@
 (function () {
     'use strict';
 
-    var REG = Laya.ClassUtils.regClass;
-    var ui;
-    (function (ui) {
-        var test;
-        (function (test) {
-            class TestSceneUI extends Laya.Scene {
-                constructor() { super(); }
-                createChildren() {
-                    super.createChildren();
-                    this.loadScene("test/TestScene");
-                }
-            }
-            test.TestSceneUI = TestSceneUI;
-            REG("ui.test.TestSceneUI", TestSceneUI);
-        })(test = ui.test || (ui.test = {}));
-    })(ui || (ui = {}));
+    class GameConfig {
+        constructor() { }
+        static init() {
+            var reg = Laya.ClassUtils.regClass;
+        }
+    }
+    GameConfig.width = 640;
+    GameConfig.height = 1136;
+    GameConfig.scaleMode = "fixedwidth";
+    GameConfig.screenMode = "none";
+    GameConfig.alignV = "top";
+    GameConfig.alignH = "left";
+    GameConfig.startScene = "test/TestScene.scene";
+    GameConfig.sceneRoot = "";
+    GameConfig.debug = true;
+    GameConfig.stat = true;
+    GameConfig.physicsDebug = false;
+    GameConfig.exportSceneToJson = true;
+    GameConfig.init();
 
-    class Building extends Laya.MeshSprite3D {
-        constructor(long = 2, width = 2, height = 2) {
+    class BaseObject extends Laya.MeshSprite3D {
+        constructor() {
             super();
-            this.meshFilter.sharedMesh = Laya.PrimitiveMesh.createBox(long, height, width);
+            this._textureUrl = "";
             this._material = new Laya.BlinnPhongMaterial();
+            this.meshRenderer.material = this._material;
+        }
+        init(url) {
+            this._textureUrl = url;
+            Laya.Texture2D.load(url, Laya.Handler.create(this, this.onLoadMaterial, null, false));
+        }
+        onLoadMaterial(tex) {
+            this._material.albedoTexture = tex;
+        }
+        setPos(x, y, z) {
+            let pos = this.transform.position;
+            pos.setValue(x, y, z);
+            this.transform.position = pos;
+        }
+        setRotate(x, y, z) {
+            let rotation = this.transform.rotationEuler;
+            rotation.setValue(x, y, z);
+            this.transform.rotationEuler = rotation;
+        }
+        clear() {
+            this.removeSelf();
+        }
+    }
+    BaseObject.poolName = "BaseObject";
+
+    class Ground extends BaseObject {
+        constructor() {
+            super();
+            this._objList = [];
+            this.meshFilter.sharedMesh = Laya.PrimitiveMesh.createPlane(10, 10, 10, 10);
+            this.init("res/grass.png");
             let tilingOffset = this._material.tilingOffset;
             tilingOffset.setValue(5, 5, 0, 0);
             this._material.tilingOffset = tilingOffset;
-            this.meshRenderer.material = this._material;
-            Laya.Texture2D.load("res/grass.png", Laya.Handler.create(this, this.onLoadMaterial, null, false));
+            this._collide = this.addComponent(Laya.PhysicsCollider);
+            this._collide.collisionGroup = CollideGroup.GROUND;
+            let planeShape = new Laya.BoxColliderShape(10, 0, 10);
+            this._collide.colliderShape = planeShape;
+        }
+    }
+    Ground.poolName = "Ground";
+
+    class Building extends BaseObject {
+        constructor(long = 2, width = 2, height = 2) {
+            super();
+            this.meshFilter.sharedMesh = Laya.PrimitiveMesh.createBox(long, height, width);
+            this.init("res/grass.png");
+            let tilingOffset = this._material.tilingOffset;
+            tilingOffset.setValue(5, 5, 0, 0);
+            this._material.tilingOffset = tilingOffset;
             this._collide = this.addComponent(Laya.PhysicsCollider);
             this._collide.collisionGroup = CollideGroup.BUILDING;
             let boxShape = new Laya.BoxColliderShape(long, height, width);
             this._collide.colliderShape = boxShape;
             this._collide.isTrigger = true;
         }
-        onLoadMaterial(tex) {
-            this._material.albedoTexture = tex;
-        }
-        clear() {
-            this.removeSelf();
-        }
     }
 
-    class Platform extends Laya.MeshSprite3D {
-        constructor(width = 4, height = 4) {
+    class Ground1 extends Ground {
+        constructor() {
             super();
-            this.meshFilter.sharedMesh = Laya.PrimitiveMesh.createPlane(width, height);
-            this._material = new Laya.BlinnPhongMaterial();
-            let tilingOffset = this._material.tilingOffset;
-            tilingOffset.setValue(5, 5, 0, 0);
-            this._material.tilingOffset = tilingOffset;
-            this.meshRenderer.material = this._material;
-            Laya.Texture2D.load("res/grass.png", Laya.Handler.create(this, this.onLoadMaterial, null, false));
-            this._collide = this.addComponent(Laya.PhysicsCollider);
-            this._collide.collisionGroup = CollideGroup.BUILDING;
-            let boxShape = new Laya.BoxColliderShape(width, 0, height);
-            this._collide.colliderShape = boxShape;
-            this.transform.rotate(new Laya.Vector3(30, 0, 0), true, false);
-        }
-        onLoadMaterial(tex) {
-            this._material.albedoTexture = tex;
-        }
-        clear() {
-            this.removeSelf();
+            let building = new Building(2, 2, 2);
+            this.addChild(building);
+            let offsetX = -4 + 8 * Math.random();
+            building.setPos(this.transform.position.x + offsetX, this.transform.position.y + 1, this.transform.position.z);
         }
     }
+    Ground1.poolName = "Ground1";
 
-    class Ground extends Laya.MeshSprite3D {
-        constructor(scene) {
+    class Ground2 extends Ground {
+        constructor() {
             super();
-            this._width = 10;
-            this._height = 10;
-            this._friction = 2;
-            this._restitution = 0;
-            this._objList = [];
-            this._type = 0;
-            this._scene = scene;
-            this.meshFilter.sharedMesh = Laya.PrimitiveMesh.createPlane(this._width, this._height, 10, 10);
-            this._material = new Laya.BlinnPhongMaterial();
-            let tilingOffset = this._material.tilingOffset;
-            tilingOffset.setValue(5, 5, 0, 0);
-            this._material.tilingOffset = tilingOffset;
-            this.meshRenderer.material = this._material;
-            Laya.Texture2D.load("res/grass.png", Laya.Handler.create(this, this.onLoadMaterial, null, false));
-            this._collide = this.addComponent(Laya.PhysicsCollider);
-            this._collide.collisionGroup = CollideGroup.GROUND;
-            let planeShape = new Laya.BoxColliderShape(this._width, 0, this._height);
-            this._collide.colliderShape = planeShape;
-            this._collide.friction = this._friction;
-            this._collide.restitution = this._restitution;
-        }
-        setType(type) {
-            this._type = type;
-            switch (this._type) {
-                case Ground.TYPE_1:
-                    break;
-                case Ground.TYPE_2:
-                    let platform = new Platform();
-                    this._objList.push(platform);
-                    this._scene.addChild(platform);
-                    let pos1 = platform.transform.position;
-                    let groundPos = this.transform.position;
-                    pos1.setValue(groundPos.x, groundPos.y, groundPos.z + 5);
-                    platform.transform.position = pos1;
-                    break;
-                case Ground.TYPE_3:
-                    let long = 2 + Math.floor(6 * Math.random());
-                    let x = -5 + long / 2;
-                    let hollLong = 2;
-                    for (let i = 0; i < 2; i++) {
-                        let wall = new Building(long, 2, 2);
-                        this._objList.push(wall);
-                        this._scene.addChild(wall);
-                        let pos1 = wall.transform.position;
-                        let groundPos = this.transform.position;
-                        pos1.setValue(groundPos.x + x, groundPos.y + 1, groundPos.z + 1);
-                        wall.transform.position = pos1;
-                        let newLong = 10 - long - hollLong;
-                        x = -5 + long + hollLong + newLong / 2;
-                        long = newLong;
-                    }
-                    break;
+            let long = 2 + Math.floor(6 * Math.random());
+            let x = -5 + long / 2;
+            let hollLong = 2;
+            for (let i = 0; i < 2; i++) {
+                let wall = new Building(long, 2, 2);
+                this.addChild(wall);
+                let pos1 = wall.transform.position;
+                let groundPos = this.transform.position;
+                pos1.setValue(groundPos.x + x, groundPos.y + 1, groundPos.z + 1);
+                wall.transform.position = pos1;
+                let newLong = 10 - long - hollLong;
+                x = -5 + long + hollLong + newLong / 2;
+                long = newLong;
             }
-        }
-        onLoadMaterial(tex) {
-            this._material.albedoTexture = tex;
-        }
-        clear() {
-            for (let i = 0; i < this._objList.length; i++) {
-                let building = this._objList[i];
-                building && building.clear();
-            }
-            this._objList.length = 0;
-            this.removeSelf();
         }
     }
-    Ground.TYPE_1 = 0;
-    Ground.TYPE_2 = 1;
-    Ground.TYPE_3 = 2;
+    Ground2.poolName = "Ground2";
 
     class CollideGroup {
     }
@@ -147,30 +124,33 @@
         constructor(scene) {
             this._groundIndex = 0;
             this._showGroundList = [];
-            this._freeGroundList = [];
             this._scene = scene;
-            this.createGround(3);
         }
         set setMainPlayer(player) {
             this._player = player;
         }
         createGround(count = 1) {
             for (let i = 0; i < count; i++) {
-                let ground = this._freeGroundList.shift();
-                if (!ground) {
-                    ground = new Ground(this._scene);
+                let def;
+                if (this._groundIndex <= 3) {
+                    def = Ground;
                 }
-                let pos = ground.transform.position;
-                pos.x = pos.y = 0;
-                pos.z = -this._groundIndex++ * 10;
-                ground.transform.position = pos;
-                this._showGroundList.push(ground);
+                else {
+                    let num = Math.random();
+                    if (num <= 0.3) {
+                        def = Ground;
+                    }
+                    else if (num > 0.3 && num <= 0.8) {
+                        def = Ground1;
+                    }
+                    else {
+                        def = Ground2;
+                    }
+                }
+                let ground = Laya.Pool.getItemByClass(def.poolName, def);
+                ground.setPos(0, 0, -this._groundIndex++ * 10);
                 this._scene.addChild(ground);
-                let type = Ground.TYPE_1;
-                if (this._groundIndex > 3) {
-                    type = Math.random() >= 0.5 ? Ground.TYPE_2 : Ground.TYPE_3;
-                }
-                ground.setType(type);
+                this._showGroundList.push(ground);
             }
         }
         update(diff) {
@@ -181,7 +161,12 @@
                 let ground = this._showGroundList[i];
                 if (ground && ground.transform.position.z - this._player.transform.position.z > 10) {
                     ground.clear();
-                    this._freeGroundList.push(ground);
+                    if (ground instanceof Ground1)
+                        Laya.Pool.recover(Ground1.poolName, ground);
+                    else if (ground instanceof Ground2)
+                        Laya.Pool.recover(Ground2.poolName, ground);
+                    else if (ground instanceof Ground)
+                        Laya.Pool.recover(Ground.poolName, ground);
                     this._showGroundList.splice(i--, 1);
                 }
             }
@@ -214,16 +199,14 @@
         }
     }
 
-    class Ball extends Laya.MeshSprite3D {
+    class Ball extends BaseObject {
         constructor() {
             super();
             this._radius = 0.5;
             this._mess = 10;
             this._speed = 20;
             this.meshFilter.sharedMesh = Laya.PrimitiveMesh.createSphere(this._radius);
-            this._material = new Laya.BlinnPhongMaterial();
-            Laya.Texture2D.load("res/wood.jpg", Laya.Handler.create(this, this.onLoadMaterial, null, false));
-            this.meshRenderer.material = this._material;
+            this.init("res/wood.jpg");
             this._collide = this.addComponent(Laya.Rigidbody3D);
             this._collide.colliderShape = new Laya.SphereColliderShape(this._radius);
             this._collide.mass = this._mess;
@@ -231,58 +214,50 @@
             let script = this.addComponent(TriggerCollisionScript);
             script.owner = this;
         }
-        onLoadMaterial(tex) {
-            this._material.albedoTexture = tex;
-        }
         update(diff) {
-            let transform = this.transform;
-            let pos = transform.position;
-            pos.z -= this._speed * diff / 1000;
-            transform.position = pos;
-            let rotation = transform.rotationEuler;
-            rotation.x -= 360 * diff / 1000;
-            transform.rotationEuler = rotation;
+            let pos = this.transform.position;
+            let offsetZ = this._speed * diff / 1000;
+            this.setPos(pos.x, pos.y, pos.z - offsetZ);
+            let rotation = this.transform.rotationEuler;
+            let rotateX = 360 * diff / 1000;
+            this.setRotate(rotation.x - rotateX, rotation.y, rotation.z);
         }
     }
+    Ball.poolName = "Ball";
 
-    class GameUI extends ui.test.TestSceneUI {
+    class SceneRoot extends Laya.Scene3D {
         constructor() {
             super();
             this._isMouseDown = false;
             this._ballList = [];
-            this.newScene = Laya.stage.addChild(new Laya.Scene3D());
-            this._tempV = new Laya.Vector3();
-            this._camera = this.newScene.addChild(new Laya.Camera(0, 0.1, 100));
+            this._camera = this.addChild(new Laya.Camera(0, 0.1, 100));
             this._camera.transform.rotate(new Laya.Vector3(-15, 0, 0), true, false);
             var directionLight = new Laya.DirectionLight();
-            this.newScene.addChild(directionLight);
+            this.addChild(directionLight);
             directionLight.color = new Laya.Vector3(0.6, 0.6, 0.6);
             var mat = directionLight.transform.worldMatrix;
             mat.setForward(new Laya.Vector3(-1.0, -1.0, -1.0));
             directionLight.transform.worldMatrix = mat;
-            this._mapManager = new MapManager(this.newScene);
+            Laya.timer.once(100, this, this.startGame);
+        }
+        startGame() {
+            GameApp.instance.mapManager.createGround(3);
             this.addMainPlayer();
-            Laya.timer.frameLoop(1, this, this.update);
-            Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
-            Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onMouseUp);
-            Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.onMouseMove);
         }
         addMainPlayer() {
             this._mainPlayer = new Ball();
             Laya.timer.once(100, this, this.onAddMainPlayer);
         }
         onAddMainPlayer() {
-            if (this._mapManager)
-                this._mapManager.setMainPlayer = this._mainPlayer;
-            this.newScene.addChild(this._mainPlayer);
+            GameApp.instance.mapManager.setMainPlayer = this._mainPlayer;
+            this.addChild(this._mainPlayer);
             let pos = this._mainPlayer.transform.position;
             pos.y = 0.5;
             this._mainPlayer.transform.position = pos;
             this._ballList.push(this._mainPlayer);
         }
-        update() {
-            let diff = Laya.timer.delta;
-            this._mapManager && this._mapManager.update(diff);
+        update(diff) {
+            GameApp.instance.mapManager && GameApp.instance.mapManager.update(diff);
             if (this._ballList) {
                 let len = this._ballList.length;
                 for (let i = 0; i < len; i++) {
@@ -317,26 +292,55 @@
         }
     }
 
-    class GameConfig {
-        constructor() { }
-        static init() {
-            var reg = Laya.ClassUtils.regClass;
-            reg("script/GameUI.ts", GameUI);
+    class UIRoot extends Laya.Sprite {
+        constructor() {
+            super();
+        }
+        update(diff) {
         }
     }
-    GameConfig.width = 640;
-    GameConfig.height = 1136;
-    GameConfig.scaleMode = "fixedwidth";
-    GameConfig.screenMode = "none";
-    GameConfig.alignV = "top";
-    GameConfig.alignH = "left";
-    GameConfig.startScene = "test/TestScene.scene";
-    GameConfig.sceneRoot = "";
-    GameConfig.debug = false;
-    GameConfig.stat = false;
-    GameConfig.physicsDebug = false;
-    GameConfig.exportSceneToJson = true;
-    GameConfig.init();
+
+    class GameApp {
+        static get instance() {
+            if (!GameApp._app) {
+                GameApp._app = new GameApp();
+            }
+            return GameApp._app;
+        }
+        get sceneRoot() {
+            return this._sceneRoot;
+        }
+        get uiRoot() {
+            return this._uiRoot;
+        }
+        get mapManager() {
+            if (!this._mapManager) {
+                this._mapManager = new MapManager(this._sceneRoot);
+            }
+            return this._mapManager;
+        }
+        constructor() {
+        }
+        init() {
+            this._sceneRoot = new SceneRoot();
+            Laya.stage.addChild(this._sceneRoot);
+            this._uiRoot = new UIRoot();
+            Laya.stage.addChild(this._uiRoot);
+        }
+        update(diff) {
+            this._sceneRoot && this._sceneRoot.update(diff);
+            this._uiRoot && this._uiRoot.update(diff);
+        }
+        onMouseDown() {
+            this._sceneRoot && this._sceneRoot.onMouseDown();
+        }
+        onMouseUp() {
+            this._sceneRoot && this._sceneRoot.onMouseUp();
+        }
+        onMouseMove() {
+            this._sceneRoot && this._sceneRoot.onMouseMove();
+        }
+    }
 
     class Main {
         constructor() {
@@ -364,7 +368,25 @@
             Laya.AtlasInfoManager.enable("fileconfig.json", Laya.Handler.create(this, this.onConfigLoaded));
         }
         onConfigLoaded() {
-            GameConfig.startScene && Laya.Scene.open(GameConfig.startScene);
+            this._app = GameApp.instance;
+            this._app.init();
+            Laya.timer.frameLoop(1, this, this.update);
+            Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
+            Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onMouseUp);
+            Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.onMouseMove);
+        }
+        update() {
+            let diff = Laya.timer.delta;
+            this._app && this._app.update(diff);
+        }
+        onMouseDown() {
+            this._app && this._app.onMouseDown();
+        }
+        onMouseUp() {
+            this._app && this._app.onMouseUp();
+        }
+        onMouseMove() {
+            this._app && this._app.onMouseMove();
         }
     }
     new Main();

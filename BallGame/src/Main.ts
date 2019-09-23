@@ -1,5 +1,7 @@
 import GameConfig from "./GameConfig";
+import { GameApp } from "./game/GameApp";
 class Main {
+	private _app: GameApp;
 	constructor() {
 		//根据IDE设置初始化引擎		
 		if (window["Laya3D"]) Laya3D.init(GameConfig.width, GameConfig.height);
@@ -29,8 +31,29 @@ class Main {
 	}
 
 	onConfigLoaded(): void {
-		//加载IDE指定的场景
-		GameConfig.startScene && Laya.Scene.open(GameConfig.startScene);
+		this._app = GameApp.instance;
+		this._app.init();
+		Laya.timer.frameLoop(1, this, this.update);
+		Laya.stage.on(Laya.Event.MOUSE_DOWN, this, this.onMouseDown);
+		Laya.stage.on(Laya.Event.MOUSE_UP, this, this.onMouseUp);
+		Laya.stage.on(Laya.Event.MOUSE_MOVE, this, this.onMouseMove);
+	}
+
+	private update(): void {
+		let diff = Laya.timer.delta;
+		this._app && this._app.update(diff);
+	}
+
+	private onMouseDown(): void {
+		this._app && this._app.onMouseDown();
+	}
+
+	private onMouseUp(): void {
+		this._app && this._app.onMouseUp();
+	}
+
+	private onMouseMove(): void {
+		this._app && this._app.onMouseMove();
 	}
 }
 //激活启动类

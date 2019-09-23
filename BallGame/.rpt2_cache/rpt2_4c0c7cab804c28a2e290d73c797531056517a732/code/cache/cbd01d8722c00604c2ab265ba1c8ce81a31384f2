@@ -1,0 +1,7 @@
+{
+  "code": "import { Ground } from \"./Ground\";\r\nimport { Building } from \"./Building\";\r\nexport class Ground2 extends Ground {\r\n    constructor() {\r\n        super();\r\n        let long = 2 + Math.floor(6 * Math.random());\r\n        let x = -5 + long / 2;\r\n        let hollLong = 2;\r\n        for (let i = 0; i < 2; i++) {\r\n            let wall = new Building(long, 2, 2);\r\n            this.addChild(wall);\r\n            let pos1 = wall.transform.position;\r\n            let groundPos = this.transform.position;\r\n            pos1.setValue(groundPos.x + x, groundPos.y + 1, groundPos.z + 1);\r\n            wall.transform.position = pos1;\r\n            let newLong = 10 - long - hollLong;\r\n            x = -5 + long + hollLong + newLong / 2;\r\n            long = newLong;\r\n        }\r\n    }\r\n}\r\nGround2.poolName = \"Ground2\";\r\n",
+  "references": [
+    "F:/work/MyGame/BallGame/src/game/scene/Ground.ts",
+    "F:/work/MyGame/BallGame/src/game/scene/Building.ts"
+  ]
+}

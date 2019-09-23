@@ -1,0 +1,7 @@
+{
+  "code": "import { Ground } from \"./Ground\";\r\nimport { Building } from \"./Building\";\r\nexport class Ground1 extends Ground {\r\n    constructor() {\r\n        super();\r\n        let building = new Building(2, 2, 2);\r\n        this.addChild(building);\r\n        let offsetX = -4 + 8 * Math.random();\r\n        building.setPos(this.transform.position.x + offsetX, this.transform.position.y + 1, this.transform.position.z);\r\n    }\r\n}\r\nGround1.poolName = \"Ground1\";\r\n",
+  "references": [
+    "F:/work/MyGame/BallGame/src/game/scene/Ground.ts",
+    "F:/work/MyGame/BallGame/src/game/scene/Building.ts"
+  ]
+}

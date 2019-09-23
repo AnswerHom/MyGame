@@ -1,0 +1,7 @@
+{
+  "code": "import { CollideGroup } from \"../manager/MapManager\";\r\nimport { BaseObject } from \"./BaseObject\";\r\nexport class Building extends BaseObject {\r\n    constructor(long = 2, width = 2, height = 2) {\r\n        super();\r\n        this.meshFilter.sharedMesh = Laya.PrimitiveMesh.createBox(long, height, width);\r\n        this.init(\"res/grass.png\");\r\n        let tilingOffset = this._material.tilingOffset;\r\n        tilingOffset.setValue(5, 5, 0, 0);\r\n        this._material.tilingOffset = tilingOffset;\r\n        this._collide = this.addComponent(Laya.PhysicsCollider);\r\n        this._collide.collisionGroup = CollideGroup.BUILDING;\r\n        let boxShape = new Laya.BoxColliderShape(long, height, width);\r\n        this._collide.colliderShape = boxShape;\r\n        this._collide.isTrigger = true;\r\n    }\r\n}\r\n",
+  "references": [
+    "F:/work/MyGame/BallGame/src/game/manager/MapManager.ts",
+    "F:/work/MyGame/BallGame/src/game/scene/BaseObject.ts"
+  ]
+}

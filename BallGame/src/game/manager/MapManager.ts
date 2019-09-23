@@ -1,5 +1,8 @@
 import { Ground } from "../scene/Ground";
 import { Ball } from "../scene/Ball";
+import { SceneRoot } from "../SceneRoot";
+import { Ground1 } from "../scene/Ground1";
+import { Ground2 } from "../scene/Ground2";
 
 export class CollideGroup {
     static GROUND: number = 1;
@@ -8,9 +11,8 @@ export class CollideGroup {
 
 export class MapManager {
     private _showGroundList: Ground[];
-    private _freeGroundList: Ground[];
     private _player: Ball;
-    private _scene: Laya.Scene3D;
+    private _scene: SceneRoot;
     private _groundIndex: number = 0;
     private _index: number;
 
@@ -18,30 +20,30 @@ export class MapManager {
         this._player = player;
     }
 
-    constructor(scene: Laya.Scene3D) {
+    constructor(scene: SceneRoot) {
         this._showGroundList = [];
-        this._freeGroundList = [];
         this._scene = scene;
-        this.createGround(3);
     }
 
     createGround(count: number = 1): void {
         for (let i = 0; i < count; i++) {
-            let ground = this._freeGroundList.shift();
-            if (!ground) {
-                ground = new Ground(this._scene);
+            let def: any;
+            if (this._groundIndex <= 3) {
+                def = Ground;
+            } else {
+                let num = Math.random();
+                if (num <= 0.3) {
+                    def = Ground;
+                } else if (num > 0.3 && num <= 0.8) {
+                    def = Ground1;
+                } else {
+                    def = Ground2;
+                }
             }
-            let pos = ground.transform.position;
-            pos.x = pos.y = 0;
-            pos.z = -this._groundIndex++ * 10;
-            ground.transform.position = pos;
-            this._showGroundList.push(ground);
+            let ground = Laya.Pool.getItemByClass(def.poolName, def);
+            ground.setPos(0, 0, -this._groundIndex++ * 10);
             this._scene.addChild(ground);
-            let type = Ground.TYPE_1;
-            if (this._groundIndex > 3) {
-                type = Math.random() >= 0.5 ? Ground.TYPE_2 : Ground.TYPE_3;
-            }
-            ground.setType(type);
+            this._showGroundList.push(ground);
         }
     }
 
@@ -54,7 +56,12 @@ export class MapManager {
             if (ground && ground.transform.position.z - this._player.transform.position.z > 10) {
                 //回收
                 ground.clear();
-                this._freeGroundList.push(ground);
+                if (ground instanceof Ground1)
+                    Laya.Pool.recover(Ground1.poolName, ground);
+                else if (ground instanceof Ground2)
+                    Laya.Pool.recover(Ground2.poolName, ground);
+                else if (ground instanceof Ground)
+                    Laya.Pool.recover(Ground.poolName, ground);
                 this._showGroundList.splice(i--, 1);
             }
         }

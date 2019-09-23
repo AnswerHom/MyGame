@@ -1,0 +1,7 @@
+{
+  "code": "import { TriggerCollisionScript } from \"../../script/TriggerCollisionScript\";\r\nimport { BaseObject } from \"./BaseObject\";\r\nexport class Ball extends BaseObject {\r\n    constructor() {\r\n        super();\r\n        this._radius = 0.5;\r\n        this._mess = 10;\r\n        this._speed = 20;\r\n        this.meshFilter.sharedMesh = Laya.PrimitiveMesh.createSphere(this._radius);\r\n        this.init(\"res/wood.jpg\");\r\n        this._collide = this.addComponent(Laya.Rigidbody3D);\r\n        this._collide.colliderShape = new Laya.SphereColliderShape(this._radius);\r\n        this._collide.mass = this._mess;\r\n        this._collide.isKinematic = true;\r\n        let script = this.addComponent(TriggerCollisionScript);\r\n        script.owner = this;\r\n    }\r\n    update(diff) {\r\n        let pos = this.transform.position;\r\n        let offsetZ = this._speed * diff / 1000;\r\n        this.setPos(pos.x, pos.y, pos.z - offsetZ);\r\n        let rotation = this.transform.rotationEuler;\r\n        let rotateX = 360 * diff / 1000;\r\n        this.setRotate(rotation.x - rotateX, rotation.y, rotation.z);\r\n    }\r\n}\r\nBall.poolName = \"Ball\";\r\n",
+  "references": [
+    "F:/work/MyGame/BallGame/src/script/TriggerCollisionScript.ts",
+    "F:/work/MyGame/BallGame/src/game/scene/BaseObject.ts"
+  ]
+}
