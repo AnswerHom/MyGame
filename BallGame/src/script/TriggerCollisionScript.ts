@@ -1,4 +1,7 @@
 import { CollideGroup } from "../game/manager/MapManager";
+import { Ball } from "../game/scene/Ball";
+import { GameApp } from "../game/GameApp";
+import { SceneRoot } from "../game/SceneRoot";
 
 export class TriggerCollisionScript extends Laya.Script3D {
 	public owner: Laya.MeshSprite3D;
@@ -7,8 +10,17 @@ export class TriggerCollisionScript extends Laya.Script3D {
 	}
 
 	public onTriggerEnter(other: Laya.PhysicsComponent): void {
-		if (this.owner && other.collisionGroup == CollideGroup.BUILDING) {
-			this.owner.removeSelf();
+		if (!this.owner) return;
+		if (other.collisionGroup == CollideGroup.BUILDING) {
+			if (this.owner instanceof Ball) {
+				if (this.owner.isMainPlayer) {
+					GameApp.instance.sceneRoot.ballDead(this.owner);
+				}
+			}
+		} else if (other.collisionGroup == CollideGroup.ADD_SPEED) {
+			if (this.owner instanceof Ball) {
+				this.owner.addSpeed();
+			}
 		}
 	}
 

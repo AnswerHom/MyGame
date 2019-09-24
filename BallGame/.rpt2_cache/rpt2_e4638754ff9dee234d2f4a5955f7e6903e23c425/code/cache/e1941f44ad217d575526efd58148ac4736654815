@@ -1,0 +1,7 @@
+{
+  "code": "import { Ground } from \"./Ground\";\r\nimport { Building } from \"./Building\";\r\nexport class Ground2 extends Ground {\r\n    constructor() {\r\n        super();\r\n        this._holeLong = 4;\r\n        this._buildingList = [];\r\n        for (let i = 0; i < 2; i++) {\r\n            let building = new Building();\r\n            this.addChild(building);\r\n            this._buildingList.push(building);\r\n        }\r\n    }\r\n    init() {\r\n        super.init();\r\n        let long = 2 + Math.floor(4 * Math.random());\r\n        let x = -5 + long / 2;\r\n        for (let i = 0; i < 2; i++) {\r\n            let building = this._buildingList[i];\r\n            if (!building)\r\n                continue;\r\n            building.size(long, 2, 2);\r\n            this.addChild(building);\r\n            this._buildingList.push(building);\r\n            let pos1 = building.transform.position;\r\n            let groundPos = this.transform.position;\r\n            pos1.setValue(groundPos.x + x, groundPos.y + 1, groundPos.z + 1);\r\n            building.transform.position = pos1;\r\n            let newLong = 10 - long - this._holeLong;\r\n            x = -5 + long + this._holeLong + newLong / 2;\r\n            long = newLong;\r\n        }\r\n    }\r\n}\r\nGround2.poolName = \"Ground2\";\r\n",
+  "references": [
+    "D:/work/MyGame/BallGame/src/game/scene/Ground.ts",
+    "D:/work/MyGame/BallGame/src/game/scene/Building.ts"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "code": "import { SceneRoot } from \"./SceneRoot\";\r\nimport { UIRoot, PageDef } from \"./UIRoot\";\r\nimport { MapManager } from \"./manager/MapManager\";\r\nexport class GameApp {\r\n    static get instance() {\r\n        if (!GameApp._app) {\r\n            GameApp._app = new GameApp();\r\n        }\r\n        return GameApp._app;\r\n    }\r\n    get sceneRoot() {\r\n        return this._sceneRoot;\r\n    }\r\n    get uiRoot() {\r\n        return this._uiRoot;\r\n    }\r\n    get mapManager() {\r\n        if (!this._mapManager) {\r\n            this._mapManager = new MapManager(this._sceneRoot);\r\n        }\r\n        return this._mapManager;\r\n    }\r\n    constructor() {\r\n    }\r\n    init() {\r\n        this._sceneRoot = new SceneRoot();\r\n        Laya.stage.addChild(this._sceneRoot);\r\n        this._uiRoot = new UIRoot();\r\n        Laya.stage.addChild(this._uiRoot);\r\n        PageDef.init();\r\n        this._uiRoot.openPage(PageDef.START_PAGE);\r\n    }\r\n    update(diff) {\r\n        this._sceneRoot && this._sceneRoot.update(diff);\r\n        this._uiRoot && this._uiRoot.update(diff);\r\n    }\r\n    onMouseDown() {\r\n        this._sceneRoot && this._sceneRoot.onMouseDown();\r\n    }\r\n    onMouseUp() {\r\n        this._sceneRoot && this._sceneRoot.onMouseUp();\r\n    }\r\n    onMouseMove() {\r\n        this._sceneRoot && this._sceneRoot.onMouseMove();\r\n    }\r\n}\r\n",
+  "references": [
+    "D:/work/MyGame/BallGame/src/game/SceneRoot.ts",
+    "D:/work/MyGame/BallGame/src/game/UIRoot.ts",
+    "D:/work/MyGame/BallGame/src/game/manager/MapManager.ts"
+  ]
+}

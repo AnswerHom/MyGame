@@ -1,0 +1,8 @@
+{
+  "code": "import { ui } from \"../../ui/layaMaxUI\";\r\nimport { GameApp } from \"../GameApp\";\r\nimport { PageDef } from \"../UIRoot\";\r\nexport class StartGamePage extends ui.test.StartGameUI {\r\n    constructor() {\r\n        super();\r\n        this.btn_Start.on(Laya.Event.CLICK, this, this.onStartGame);\r\n    }\r\n    onStartGame() {\r\n        GameApp.instance.sceneRoot.startGame();\r\n        GameApp.instance.uiRoot.closePage(PageDef.START_PAGE);\r\n    }\r\n    close() {\r\n        this.btn_Start.off(Laya.Event.CLICK, this, this.onStartGame);\r\n    }\r\n}\r\n",
+  "references": [
+    "D:/work/MyGame/BallGame/src/ui/layaMaxUI.ts",
+    "D:/work/MyGame/BallGame/src/game/GameApp.ts",
+    "D:/work/MyGame/BallGame/src/game/UIRoot.ts"
+  ]
+}

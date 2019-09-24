@@ -40,7 +40,7 @@ class Main {
 	}
 
 	private update(): void {
-		let diff = Laya.timer.delta;
+		let diff = 20;
 		this._app && this._app.update(diff);
 	}
 

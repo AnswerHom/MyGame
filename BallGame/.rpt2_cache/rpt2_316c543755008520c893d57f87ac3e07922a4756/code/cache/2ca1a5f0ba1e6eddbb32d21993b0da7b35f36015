@@ -1,0 +1,9 @@
+{
+  "code": "import { CollideGroup } from \"../game/manager/MapManager\";\r\nimport { Ball } from \"../game/scene/Ball\";\r\nimport { GameApp } from \"../game/GameApp\";\r\nexport class TriggerCollisionScript extends Laya.Script3D {\r\n    constructor() {\r\n        super();\r\n    }\r\n    onTriggerEnter(other) {\r\n        if (!this.owner)\r\n            return;\r\n        if (other.collisionGroup == CollideGroup.BUILDING) {\r\n            if (this.owner instanceof Ball) {\r\n                if (this.owner.isMainPlayer) {\r\n                    GameApp.instance.sceneRoot.ballDead(this.owner);\r\n                }\r\n            }\r\n        }\r\n        else if (other.collisionGroup == CollideGroup.ADD_SPEED) {\r\n            if (this.owner instanceof Ball) {\r\n                this.owner.addSpeed();\r\n            }\r\n        }\r\n    }\r\n    onTriggerStay(other) {\r\n    }\r\n    onTriggerExit(other) {\r\n    }\r\n    onCollisionEnter(collision) {\r\n    }\r\n    onCollisionStay(collision) {\r\n    }\r\n    onCollisionExit(collision) {\r\n    }\r\n}\r\n",
+  "references": [
+    "D:/work/MyGame/BallGame/src/game/manager/MapManager.ts",
+    "D:/work/MyGame/BallGame/src/game/scene/Ball.ts",
+    "D:/work/MyGame/BallGame/src/game/GameApp.ts",
+    "D:/work/MyGame/BallGame/src/game/SceneRoot.ts"
+  ]
+}

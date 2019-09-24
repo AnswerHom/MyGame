@@ -12,7 +12,7 @@ export class BaseObject extends Laya.MeshSprite3D {
         this.meshRenderer.material = this._material;
     }
 
-    init(url: string) {
+    setMaterial(url: string) {
         this._textureUrl = url;
         Laya.Texture2D.load(url, Laya.Handler.create(this, this.onLoadMaterial, null, false));
     }

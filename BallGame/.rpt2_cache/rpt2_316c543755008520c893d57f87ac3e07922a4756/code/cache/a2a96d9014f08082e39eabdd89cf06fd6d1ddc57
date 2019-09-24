@@ -1,0 +1,8 @@
+{
+  "code": "import { Ground } from \"./Ground\";\r\nimport { AddSpeedArea } from \"./AddSpeedArea\";\r\nexport class Ground3 extends Ground {\r\n    constructor() {\r\n        super();\r\n        this._area = new AddSpeedArea();\r\n        this.addChild(this._area);\r\n    }\r\n    init() {\r\n        super.init();\r\n        if (this._area) {\r\n            let offsetX = -3 + 6 * Math.random();\r\n            this._area.setPos(offsetX, 0.5, 5);\r\n        }\r\n    }\r\n}\r\nGround3.poolName = \"Ground3\";\r\n",
+  "references": [
+    "D:/work/MyGame/BallGame/src/game/scene/Ground.ts",
+    "D:/work/MyGame/BallGame/src/game/scene/Building.ts",
+    "D:/work/MyGame/BallGame/src/game/scene/AddSpeedArea.ts"
+  ]
+}

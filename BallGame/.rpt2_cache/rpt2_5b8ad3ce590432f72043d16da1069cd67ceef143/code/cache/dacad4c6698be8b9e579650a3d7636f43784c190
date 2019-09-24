@@ -1,0 +1,6 @@
+{
+  "code": "import { StartGamePage } from \"./page/StartGamePage\";\r\nexport class PageDef {\r\n    static init() {\r\n        PageDef._pageClass[PageDef.START_PAGE] = StartGamePage;\r\n    }\r\n    static getPageClass(key) {\r\n        return PageDef._pageClass[key];\r\n    }\r\n}\r\nPageDef._pageClass = {};\r\nPageDef.START_PAGE = 0;\r\nexport class UIRoot extends Laya.Sprite {\r\n    constructor() {\r\n        super();\r\n        this._pages = {};\r\n    }\r\n    openPage(key) {\r\n        let pageClass = PageDef.getPageClass(PageDef.START_PAGE);\r\n        let page = new pageClass();\r\n        this.addChild(page);\r\n        this._pages[key] = page;\r\n    }\r\n    closePage(key) {\r\n        let page = this._pages[key];\r\n        if (page) {\r\n            page.close();\r\n            page.removeSelf();\r\n            page.destroy(true);\r\n        }\r\n    }\r\n    update(diff) {\r\n    }\r\n}\r\n",
+  "references": [
+    "D:/work/MyGame/BallGame/src/game/page/StartGamePage.ts"
+  ]
+}

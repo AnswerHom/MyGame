@@ -1,5 +1,5 @@
 import { SceneRoot } from "./SceneRoot";
-import { UIRoot } from "./UIRoot";
+import { UIRoot, PageDef } from "./UIRoot";
 import { MapManager } from "./manager/MapManager";
 
 export class GameApp {
@@ -39,6 +39,8 @@ export class GameApp {
         this._uiRoot = new UIRoot();
         Laya.stage.addChild(this._uiRoot);
 
+        PageDef.init();
+        this._uiRoot.openPage(PageDef.START_PAGE);
     }
 
     update(diff: number) {

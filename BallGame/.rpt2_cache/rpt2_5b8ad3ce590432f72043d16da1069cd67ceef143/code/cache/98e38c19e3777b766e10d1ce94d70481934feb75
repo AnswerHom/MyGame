@@ -1,0 +1,7 @@
+{
+  "code": "import { BaseObject } from \"./BaseObject\";\r\nimport { CollideGroup } from \"../manager/MapManager\";\r\nexport class AddSpeedArea extends BaseObject {\r\n    constructor() {\r\n        super();\r\n        this.setMaterial(\"res/wood.jpg\");\r\n        this.meshFilter.sharedMesh = Laya.PrimitiveMesh.createPlane(2, 2);\r\n        this._collide = this.addComponent(Laya.PhysicsCollider);\r\n        this._collide.collisionGroup = CollideGroup.ADD_SPEED;\r\n        let planeShape = new Laya.BoxColliderShape(2, 0, 2);\r\n        this._collide.colliderShape = planeShape;\r\n        this._collide.isTrigger = true;\r\n    }\r\n}\r\n",
+  "references": [
+    "D:/work/MyGame/BallGame/src/game/scene/BaseObject.ts",
+    "D:/work/MyGame/BallGame/src/game/manager/MapManager.ts"
+  ]
+}

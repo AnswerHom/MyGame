@@ -6,8 +6,16 @@ import { GameApp } from "./GameApp";
  * 场景容器
  */
 export class SceneRoot extends Laya.Scene3D {
-    private _mapManager: MapManager;
+    static EVENT_MAINPLAYER_DEAD: string = "Dead";
+
+    static STATE_OVER: number = 0;
+    static STATE_START: number = 1;
+    gameState: number = 0;
+
     private _mainPlayer: Ball;
+    get mainPlayer(): Ball {
+        return this._mainPlayer;
+    }
     private _ballList: Ball[];
     private _camera: Laya.Camera;
 
@@ -27,30 +35,44 @@ export class SceneRoot extends Laya.Scene3D {
         mat.setForward(new Laya.Vector3(-1.0, -1.0, -1.0));
         directionLight.transform.worldMatrix = mat;
 
-        Laya.timer.once(100, this, this.startGame);
+    }
+
+    ballDead(ball: Ball) {
+        if (ball.isMainPlayer) {
+            this.event(SceneRoot.EVENT_MAINPLAYER_DEAD);
+        }
+        let index = this._ballList.indexOf(ball);
+        if (index >= 0)
+            this._ballList.splice(index, 1);
+        ball.clear();
+        Laya.Pool.recover(Ball.poolName, ball);
     }
 
     public startGame(): void {
+        GameApp.instance.mapManager.clear();
+        this.gameState = SceneRoot.STATE_START;
         GameApp.instance.mapManager.createGround(3);
         this.addMainPlayer();
     }
 
     private addMainPlayer(): void {
-        this._mainPlayer = new Ball();
-        Laya.timer.once(100, this, this.onAddMainPlayer);
+        if (!this._mainPlayer) {
+            this._mainPlayer = new Ball();
+        }
+        this._mainPlayer.isMainPlayer = true;
+        this._mainPlayer.setPos(0, 0.5, 0);
+        this.onAddMainPlayer();
     }
 
     private onAddMainPlayer(): void {
         GameApp.instance.mapManager.setMainPlayer = this._mainPlayer;
         this.addChild(this._mainPlayer);
-        let pos = this._mainPlayer.transform.position;
-        pos.y = 0.5;
-        this._mainPlayer.transform.position = pos;
         this._ballList.push(this._mainPlayer);
     }
 
     //心跳
     update(diff: number): void {
+        if (this.gameState != SceneRoot.STATE_START) return;
         GameApp.instance.mapManager && GameApp.instance.mapManager.update(diff);
         if (this._ballList) {
             let len = this._ballList.length;

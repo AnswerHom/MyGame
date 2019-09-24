@@ -13,7 +13,7 @@ export class Building extends BaseObject {
         //设置形状
         this.meshFilter.sharedMesh = Laya.PrimitiveMesh.createBox(long, height, width);
         //设置材质
-        this.init("res/grass.png");
+        this.setMaterial("res/grass.png");
         //设置纹理平铺和偏移
         let tilingOffset = this._material.tilingOffset;
         tilingOffset.setValue(5, 5, 0, 0);
@@ -30,4 +30,11 @@ export class Building extends BaseObject {
         this._collide.isTrigger = true;
     }
 
+    size(long: number, width: number, height: number) {
+        if (this.meshFilter)
+            this.meshFilter.sharedMesh = Laya.PrimitiveMesh.createBox(long, height, width);
+        //这样做不太好，TODO
+        let boxShape = new Laya.BoxColliderShape(long, height, width);
+        this._collide.colliderShape = boxShape;
+    }
 }

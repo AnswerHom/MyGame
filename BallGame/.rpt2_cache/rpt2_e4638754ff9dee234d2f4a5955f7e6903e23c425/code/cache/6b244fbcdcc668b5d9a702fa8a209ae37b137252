@@ -1,0 +1,4 @@
+{
+  "code": "export class UIRoot extends Laya.Sprite {\r\n    constructor() {\r\n        super();\r\n    }\r\n    update(diff) {\r\n    }\r\n}\r\n",
+  "references": []
+}

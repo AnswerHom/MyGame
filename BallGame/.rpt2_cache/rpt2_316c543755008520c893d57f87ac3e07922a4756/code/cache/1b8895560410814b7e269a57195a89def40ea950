@@ -1,0 +1,9 @@
+{
+  "code": "import { StartGamePage } from \"./page/StartGamePage\";\r\nimport { OverGamePage } from \"./page/OverGamePage\";\r\nimport { GameApp } from \"./GameApp\";\r\nimport { SceneRoot } from \"./SceneRoot\";\r\nexport class PageDef {\r\n    static init() {\r\n        PageDef._pageClass[PageDef.START_PAGE] = StartGamePage;\r\n        PageDef._pageClass[PageDef.OVER_PAGE] = OverGamePage;\r\n    }\r\n    static getPageClass(key) {\r\n        return PageDef._pageClass[key];\r\n    }\r\n}\r\nPageDef._pageClass = {};\r\nPageDef.START_PAGE = 0;\r\nPageDef.OVER_PAGE = 1;\r\nexport class UIRoot extends Laya.Sprite {\r\n    constructor() {\r\n        super();\r\n        this._pages = {};\r\n        GameApp.instance.sceneRoot.on(SceneRoot.EVENT_MAINPLAYER_DEAD, this, this.onMainPlayerDead);\r\n    }\r\n    onMainPlayerDead() {\r\n        GameApp.instance.sceneRoot.gameState = SceneRoot.STATE_OVER;\r\n        this.openPage(PageDef.OVER_PAGE);\r\n    }\r\n    openPage(key) {\r\n        let pageClass = PageDef.getPageClass(key);\r\n        let page = new pageClass();\r\n        this.addChild(page);\r\n        this._pages[key] = page;\r\n    }\r\n    closePage(key) {\r\n        let page = this._pages[key];\r\n        if (page) {\r\n            page.close();\r\n            page.removeSelf();\r\n            page.destroy(true);\r\n            delete this._pages[key];\r\n        }\r\n    }\r\n    update(diff) {\r\n    }\r\n}\r\n",
+  "references": [
+    "D:/work/MyGame/BallGame/src/game/page/StartGamePage.ts",
+    "D:/work/MyGame/BallGame/src/game/page/OverGamePage.ts",
+    "D:/work/MyGame/BallGame/src/game/GameApp.ts",
+    "D:/work/MyGame/BallGame/src/game/SceneRoot.ts"
+  ]
+}

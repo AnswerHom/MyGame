@@ -4,6 +4,16 @@ import Dialog=Laya.Dialog;
 import Scene=Laya.Scene;
 var REG: Function = Laya.ClassUtils.regClass;
 export module ui.test {
+    export class StartGameUI extends Laya.Scene {
+		public btn_Start:Laya.Button;
+        public static  uiView:any ={"type":"Scene","props":{"width":640,"height":1136},"compId":2,"child":[{"type":"Sprite","props":{"y":0,"x":0,"width":640,"height":1136,"alpha":0.8},"compId":4,"child":[{"type":"Rect","props":{"width":640,"lineWidth":1,"height":1136,"fillColor":"#000000"},"compId":5}]},{"type":"Button","props":{"y":521,"x":192,"var":"btn_Start","skin":"comp/button.png","scaleY":2,"scaleX":2,"labelSize":30,"labelFont":"SimHei","label":"开始游戏"},"compId":3}],"loadList":["comp/button.png"],"loadList3D":[]};
+        constructor(){ super()}
+        createChildren():void {
+            super.createChildren();
+            this.createView(StartGameUI.uiView);
+        }
+    }
+    REG("ui.test.StartGameUI",StartGameUI);
     export class TestSceneUI extends Laya.Scene {
         constructor(){ super()}
         createChildren():void {
