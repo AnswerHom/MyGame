@@ -1,0 +1,4 @@
+{
+  "code": "export class CardConfig {\r\n}\r\nCardConfig.TYPE_FR = 0;\r\nCardConfig.TYPE_GF = 1;\r\nCardConfig.TYPE_BZCZM = 2;\r\nCardConfig.TYPE_ZT = 3;\r\nCardConfig.TYPE_DYFXZ = 4;\r\nCardConfig.TYPE_SQ = 5;\r\nCardConfig.TYPE_YY = 6;\r\nCardConfig.TYPE_QBJH = 7;\r\nCardConfig.TYPE_JY = 8;\r\nCardConfig.TYPE_MJZ = 9;\r\nCardConfig.TYPE_PTR = 10;\r\nCardConfig.RANDOM_POOL = [\r\n    CardConfig.TYPE_SQ,\r\n    CardConfig.TYPE_MJZ,\r\n    CardConfig.TYPE_MJZ,\r\n    CardConfig.TYPE_MJZ,\r\n    CardConfig.TYPE_PTR,\r\n    CardConfig.TYPE_PTR,\r\n    CardConfig.TYPE_YY,\r\n    CardConfig.TYPE_YY,\r\n    CardConfig.TYPE_YY,\r\n    CardConfig.TYPE_YY,\r\n    CardConfig.TYPE_YY,\r\n    CardConfig.TYPE_QBJH,\r\n    CardConfig.TYPE_QBJH,\r\n    CardConfig.TYPE_QBJH,\r\n    CardConfig.TYPE_QBJH,\r\n    CardConfig.TYPE_JY,\r\n    CardConfig.TYPE_JY,\r\n    CardConfig.TYPE_JY,\r\n    CardConfig.TYPE_JY,\r\n];\r\n",
+  "references": []
+}

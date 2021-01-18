@@ -1,0 +1,5 @@
+{
+  "code": "export class BaseCard {\r\n}\r\n//# sourceMappingURL=BaseCard.js.map",
+  "references": [],
+  "map": "{\"version\":3,\"file\":\"BaseCard.js\",\"sourceRoot\":\"\",\"sources\":[\"../../../../src/object/card/BaseCard.ts\"],\"names\":[],\"mappings\":\"AAAA,MAAM,OAAO,QAAQ;CAKpB\"}"
+}
