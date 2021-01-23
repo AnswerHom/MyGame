@@ -1,6 +1,8 @@
 import GameConfig from "./GameConfig";
 import { GameManager } from "./manager/GameManager";
 class Main {
+	private _gameMgr: GameManager;
+
 	constructor() {
 		//根据IDE设置初始化引擎		
 		if (window["Laya3D"]) Laya3D.init(GameConfig.width, GameConfig.height);
@@ -31,8 +33,16 @@ class Main {
 
 	onConfigLoaded(): void {
 		//加载IDE指定的场景
-		let gameMgr = new GameManager();
-		gameMgr.initGame(8);
+		this._gameMgr = new GameManager();
+		this._gameMgr.initGame(8);
+		Laya.timer.frameLoop(1, this, this.update);
+	}
+
+	private update(): void {
+		let diff = Laya.timer.delta;
+		if (this._gameMgr) {
+			this._gameMgr.update(diff);
+		}
 	}
 }
 //激活启动类
